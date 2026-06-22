@@ -10,7 +10,7 @@ Add `t1y_sdk_flutter` to your `pubspec.yaml`:
 
 ```yaml
 dependencies:
-  t1y_sdk_flutter: ^0.0.1
+  t1y_sdk_flutter: ^0.0.2
 ```
 
 Or install via command line:

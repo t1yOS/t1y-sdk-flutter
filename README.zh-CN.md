@@ -10,7 +10,7 @@
 
 ```yaml
 dependencies:
-  t1y_sdk_flutter: ^0.0.1
+  t1y_sdk_flutter: ^0.0.2
 ```
 
 或通过命令行安装：
