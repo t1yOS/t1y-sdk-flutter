@@ -1,0 +1,23 @@
+name: t1y_sdk_flutter
+description: "t1yOS Serverless Platform Flutter/Dart SDK — cloud database, metadata, and cloud functions client"
+version: 0.0.1
+homepage: https://www.t1y.net
+repository: https://github.com/t1yOS/t1y-os-flutter
+
+environment:
+  sdk: ^3.12.2
+  flutter: ">=1.17.0"
+
+dependencies:
+  flutter:
+    sdk: flutter
+  http: ^1.2.0
+  crypto: ^3.0.3
+  pointycastle: ^3.9.1
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+  flutter_lints: ^6.0.0
+
+flutter:
