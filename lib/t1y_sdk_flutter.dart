@@ -47,6 +47,7 @@ export 'src/crypto/sign.dart';
 export 'src/utils/constants.dart';
 export 'src/utils/convert.dart';
 export 'src/utils/errors.dart';
+export 'src/utils/logger.dart';
 export 'src/utils/time_utils.dart';
 export 'src/utils/url_utils.dart';
 export 'src/utils/validators.dart';

@@ -43,15 +43,17 @@ String encryptAESGCM(String data, Uint8List keyBytes) {
       ),
     );
 
-  // Encrypt
-  final encrypted = Uint8List(cipher.getOutputSize(plaintext.length));
-  final len = cipher.processBytes(Uint8List.fromList(plaintext), 0, plaintext.length, encrypted, 0);
-  cipher.doFinal(encrypted, len);
+  // Encrypt — processBytes writes ciphertext, doFinal appends tag
+  final outputSize = cipher.getOutputSize(plaintext.length);
+  final encrypted = Uint8List(outputSize);
+  final processedLen =
+      cipher.processBytes(Uint8List.fromList(plaintext), 0, plaintext.length, encrypted, 0);
+  final finalLen = cipher.doFinal(encrypted, processedLen);
+  final totalLen = processedLen + finalLen;
 
-  // Extract ciphertext and tag
-  final mac = cipher.mac;
-  final ciphertext = encrypted.sublist(0, encrypted.length - aesGcmTagLength);
-  final tag = mac;
+  // Slice the exact output: [ciphertext (plaintext.length bytes)] || [tag (16 bytes)]
+  final ciphertext = encrypted.sublist(0, totalLen - aesGcmTagLength);
+  final tag = encrypted.sublist(totalLen - aesGcmTagLength, totalLen);
 
   final payload = AESGCMPayload(
     n: base64Encode(nonce),
@@ -95,10 +97,12 @@ String decryptAESGCM(String jsonPayload, Uint8List keyBytes) {
       ),
     );
 
-  // Decrypt
-  final decrypted = Uint8List(cipher.getOutputSize(sealed.length));
-  final len = cipher.processBytes(sealed, 0, sealed.length, decrypted, 0);
-  cipher.doFinal(decrypted, len);
+  // Decrypt — processBytes reverses encryption, doFinal verifies tag
+  final outputSize = cipher.getOutputSize(sealed.length);
+  final decrypted = Uint8List(outputSize);
+  final processedLen =
+      cipher.processBytes(sealed, 0, sealed.length, decrypted, 0);
+  final finalLen = cipher.doFinal(decrypted, processedLen);
 
-  return utf8.decode(decrypted.sublist(0, len));
+  return utf8.decode(decrypted.sublist(0, processedLen + finalLen));
 }

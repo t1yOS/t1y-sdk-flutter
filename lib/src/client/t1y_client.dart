@@ -6,6 +6,7 @@ import '../utils/constants.dart';
 import '../utils/convert.dart';
 import '../utils/validators.dart';
 import '../utils/errors.dart';
+import '../utils/logger.dart';
 import 't1y_collection.dart';
 
 /// Main T1Y client class for the t1yOS Serverless Platform SDK.
@@ -64,8 +65,10 @@ class T1YClient {
       final nowUnix = (DateTime.now().toUtc().millisecondsSinceEpoch / 1000).floor();
       _config.offset = res.data.unix - nowUnix;
     } catch (err) {
-      // ignore: avoid_print
-      print('Failed to get time offset from server, defaulting to 0. Error: $err');
+      T1YLogger.warning(
+        'Failed to get time offset from server, defaulting to 0',
+        err,
+      );
       _config.isSafeMode = false;
       _config.offset = 0;
     }
@@ -172,7 +175,7 @@ class T1YClient {
 
   /// Verify an HMAC-SHA256 signature.
   bool verifyHmacSHA256(String secret, String message, String signature) =>
-      verifyHmacSHA256(secret, message, signature);
+      _verifyHmacSHA256(secret, message, signature);
 
   // ==================== Private Helpers ====================
 
@@ -234,7 +237,7 @@ class DbAccessor {
   }
 }
 
-// Local aliases to avoid global name conflicts
+// Local aliases to avoid global name conflicts with class methods
 // ignore: non_constant_identifier_names
 bool validators_assertObjectID(String idStr, [String name = 'ObjectID']) =>
     assertObjectID(idStr, name);
@@ -246,3 +249,7 @@ bool convert_isPlainObject(dynamic value) => isPlainObject(value);
 // ignore: non_constant_identifier_names
 bool convert_isNonEmptyListWithNonEmptyObjects(dynamic value) =>
     isNonEmptyListWithNonEmptyObjects(value);
+
+// ignore: non_constant_identifier_names
+bool _verifyHmacSHA256(String secret, String message, String signature) =>
+    verifyHmacSHA256(secret, message, signature);
